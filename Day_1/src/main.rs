@@ -34,7 +34,8 @@ fn rolling_average(input: Vec<f32>, window: usize) -> Vec<f32> {
 }
 
 fn is_play_part_2() -> bool {
-
+    const CHOICE_MESSAGE: &'static str = "Please Choose part '1' or '2' \n >> ";
+    const RESPONSE_SUCCESS_MESSAGE: &'static str = "Running Scenario";
     let input = get_input(CHOICE_MESSAGE, RESPONSE_SUCCESS_MESSAGE);
     match input.as_str() {
         "1" => false,
