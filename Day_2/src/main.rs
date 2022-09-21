@@ -15,7 +15,6 @@ fn main() {
     for turn in direction_vec{
         if turn.is_empty(){continue}
         let turn_duo = turn.split(" ").collect::<Vec<&str>>();
-        println!("turn duo => {:?}", turn_duo);
         let dir: Direction = Direction::from_str(turn_duo[0]).expect("Could not parse Direction");
         let dist:i32 = i32::from_str(turn_duo[1]).expect("Could not parse distance");
         position.move_position(dir, dist)
