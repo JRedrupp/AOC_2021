@@ -11,7 +11,7 @@ def main(file_path):
         n_turns += 1
     score = game.get_winning_score()
     print(f"Game Over! Took {n_turns} turns.")
-    print(f"Winning Score is {score}")
+    print(f"Winning Score is {score}!")
 
 
 if __name__ == '__main__':
