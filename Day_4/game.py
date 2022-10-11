@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from models import BingoBoard
 
 
@@ -26,12 +24,11 @@ class Game:
                 bingo_boards.append(BingoBoard.from_str(board_str))
         return Game(moves_to_play=instruction_set, bingo_boards=bingo_boards)
 
-    def is_over(self) -> tuple[Optional[int], bool]:
-        # TODO: Split this back out to separate responsibility
+    def boards_status(self) -> list[bool]:
+        status: list[bool] = []
         for i, board in enumerate(self.boards):
-            if board.is_finished():
-                return i, True
-        return None, False
+            status.append(board.is_finished())
+        return status
 
     def play_turn(self):
         number_to_play = self.moves_to_play.pop(0)
@@ -40,8 +37,49 @@ class Game:
         self.played_moves.append(number_to_play)
 
     def get_winning_score(self) -> int:
-        winning_board, _ = self.is_over()
+        status: list[bool] = self.boards_status()
+        winning_board = [i for i, x in enumerate(status) if x][0]
         board = self.boards[winning_board]
         board_score: int = board.get_score()
         last_called: int = int(self.played_moves[-1])
         return board_score * last_called
+
+    def get_specific_score(self, final_to_win: int) -> int:
+        board = self.boards[final_to_win]
+        board_score: int = board.get_score()
+        last_called: int = int(self.played_moves[-1])
+        return board_score * last_called
+
+    @classmethod
+    def play_pt_1(cls, file_path):
+        print("--- Part 1 ---")
+        game = cls.from_file(file_path)
+        n_turns = 0
+        while not any(game.boards_status()):
+            game.play_turn()
+            n_turns += 1
+        score = game.get_winning_score()
+        print(f"Game Over! Took {n_turns} turns.")
+        print(f"Winning Score is {score}!")
+        print(f"Winning Score is {score == 89001}!")
+
+    @classmethod
+    def play_pt_2(cls, file_path):
+        final_to_win = -1
+        print("--- Part 2 ---")
+        game = cls.from_file(file_path)
+        n_turns = 0
+        while not all(game.boards_status()):
+            game.play_turn()
+            n_turns += 1
+            if game.boards_status().count(False) == 1:
+                final_to_win: int = [i for i, x in enumerate(game.boards_status()) if x is False][0]
+
+        print(f"Final Board to win is {final_to_win}")
+
+        # Play until Board is complete
+        while game.boards_status()[final_to_win] is False:
+            game.play_turn()
+        score = game.get_specific_score(final_to_win)
+        print(f"Last Board to win's Score is {score}!")
+        print(f"Last Board to win's Score is {score == 7296}!")
