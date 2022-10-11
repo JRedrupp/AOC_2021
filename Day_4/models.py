@@ -26,6 +26,11 @@ class BingoBoard:
         self.column_length: int = len(self.board_places[0])
         self.row_length: int = len(self.board_places)
 
+    def __iter__(self):
+        for i in range(len(self.board_places)):
+            for j in range(len(self.board_places[0])):
+                yield self.board_places[i][j]
+
     @classmethod
     def from_str(cls, board_str: str) -> BingoBoard:
         # Example board_str -> '\n 3 55 15 54 81\n56 77 20 99 25\n90 57 67  0 97\n28 45 69 84 14\n91 94 39 36 85'
@@ -78,16 +83,12 @@ class BingoBoard:
         return [row[col_index] for row in self.board_places]
 
     def check_number(self, number_to_play: str):
-        # TODO: Add custom __iter__
-        for row in self.board_places:
-            for bp in row:
-                bp.check_number(number_to_play)
+        for bp in self:
+            bp.check_number(number_to_play)
 
     def get_score(self) -> int:
         score = 0
-        # TODO: Add custom __iter__
-        for row in self.board_places:
-            for bp in row:
-                if not bp.picked:
-                    score += int(bp.number)
+        for bp in self:
+            if not bp.picked:
+                score += int(bp.number)
         return score
